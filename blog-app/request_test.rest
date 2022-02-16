@@ -1,0 +1,26 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "TDD harms architecture",
+    "author": "Michael Chan",
+    "url": "https://reactpatterns.com"
+}
+
+###
+GET http://localhost:3001/api/blogs/
+
+###
+GET http://localhost:3001/api/blogs/5
+
+###
+DELETE http://localhost:3001/api/blogs/5
+
+###
+PUT http://localhost:3001/api/blogs/4
+Content-Type: application/json
+
+{
+    "likes": 1
+}
+
