@@ -1,5 +1,7 @@
 const router = require('express').Router();
-const { Blog } = require('../models');
+const { tokenExtractor } = require('../util/middleware');
+
+const { Blog, User } = require('../models');
 
 const blogFinder = async (req, res, next) => {
   req.blog = await Blog.findByPk(req.params.id);
@@ -13,7 +15,13 @@ const blogFinder = async (req, res, next) => {
 };
 
 router.get('/', async (req, res) => {
-  const blogs = await Blog.findAll();
+  const blogs = await Blog.findAll({
+    attributes: { exclude: ['userId'] },
+    include: {
+      model: User,
+      attributes: ['name'],
+    },
+  });
   console.log(JSON.stringify(blogs));
   res.json(blogs);
 });
@@ -23,8 +31,8 @@ router.get('/:id', blogFinder, async (req, res) => {
   res.json(req.blog);
 });
 
-router.post('/', async (req, res) => {
-  const blog = await Blog.create(req.body); // = build(re.body) then save()
+router.post('/', tokenExtractor, async (req, res) => {
+  const blog = await Blog.create({ ...req.body, userId: req.user.id }); // = build(re.body) then save()
   return res.json(blog);
 });
 
@@ -34,9 +42,16 @@ router.put('/:id', blogFinder, async (req, res) => {
   res.json(req.blog);
 });
 
-router.delete('/:id', blogFinder, async (req, res) => {
-  await req.blog.destroy();
-  res.status(204).end();
+router.delete('/:id', blogFinder, tokenExtractor, async (req, res) => {
+  if (req.blog.userId === req.user.id) {
+    await req.blog.destroy();
+    res.status(204).end();
+  } else {
+    res
+      .status(401)
+      .json({ error: "You don't have permission to delete this blog." })
+      .end();
+  }
 });
 
 module.exports = router;
