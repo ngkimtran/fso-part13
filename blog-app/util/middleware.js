@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const { SECRET } = require('../util/config');
-const { User } = require('../models');
+const { User, Session } = require('../models');
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' });
@@ -30,12 +30,24 @@ const errorHandler = (error, req, res, next) => {
 
 const tokenExtractor = async (req, res, next) => {
   const authorization = req.get('authorization');
+  req.token = null;
+
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
+    const token = authorization.substring(7);
+    const session = await Session.findOne({
+      where: { token },
+    });
+
+    if (session) {
+      req.token = token;
+      req.decodedToken = jwt.verify(req.token, SECRET);
+    } else return res.status(401).json({ error: 'token expired' });
   }
+
   if (!authorization || !req.decodedToken.id) {
     return res.status(401).json({ error: 'missing token' });
   }
+
   req.user = await User.findByPk(req.decodedToken.id);
 
   next();
