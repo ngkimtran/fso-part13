@@ -1,20 +1,24 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5nb2NraW10cmFuQGVtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE2NDUzNTgwNTd9.RZ0ik6gsF0H3U4M-rWrKfTGIPPS2MFVdeDS9Q8LxGG0
 
 {
     "title": "TDD harms architecture",
     "author": "Michael Chan",
-    "url": "https://reactpatterns.com"
+    "url": "https://reactpatterns.com",
+    "year": 2012
 }
 
 ###
-GET http://localhost:3001/api/blogs/
+GET http://localhost:3001/api/blogs
 
 ###
 GET http://localhost:3001/api/blogs/5
 
 ###
-DELETE http://localhost:3001/api/blogs/5
+DELETE http://localhost:3001/api/blogs/1
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5na2ltdHJhbiIsImlkIjoxLCJpYXQiOjE2NDUwOTEzNzJ9.SRb6SfVWQtPiCVLDUDATy77oF50RHILownzsAfqHPU0
+
 
 ###
 PUT http://localhost:3001/api/blogs/4
@@ -24,3 +28,52 @@ Content-Type: application/json
     "likes": 1
 }
 
+###
+GET http://localhost:3001/api/users/1
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+    "username": "ngockimtran@email.com",
+    "name": "Kim"
+}
+
+###
+PUT http://localhost:3001/api/users/kimtran
+Content-Type: application/json
+
+{
+    "username": "ngkimtran"
+}
+
+###
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+    "username": "ngockimtran@email.com",
+    "password": "secret"
+}
+
+###
+GET http://localhost:3001/api/authors
+
+###
+POST http://localhost:3001/api/readinglists
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "blogId": 1
+}
+
+###
+PUT http://localhost:3001/api/readinglists/1
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5nb2NraW10cmFuQGVtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE2NDUzNTkxMDN9.RmJ13YNBcrq_JAi84UNVTSfs1-Jqw5boL73isxiduUU
+
+{
+    "read": true
+}
